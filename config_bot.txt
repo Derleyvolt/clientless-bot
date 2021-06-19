@@ -1,0 +1,19 @@
+[CONTA 1]
+
+login                     = tekinha22
+senha                     = minhaacc
+player_name               = Faith
+script                    = forjar
+force                     = 1
+fly_id                    = 12771
+
+items                     = 1
+inventory                 = 1
+healing                   = 1
+trade                     = 1
+party                     = 1
+movement                  = 1
+
+party_list_permission     = []
+trade_list_permission     = []
+command_list_permission   = []

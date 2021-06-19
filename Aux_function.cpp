@@ -1,0 +1,177 @@
+#include "stdafx.h"
+#include "Aux_function.h"
+
+unsigned char buff[300] = { 0x94,0x14,0xB5,0x00,0x02,0x00,0x00,0x00,0x62,0xA4,0x08,0xC8,0x7B,0x81,0xB7,0x1F,0x39,0x18,
+				   0x0B,0x9B,0x21,0xE6,0x66,0xFD,0x7A,0x9F,0x74,0x1C,0x61,0x3D,0x55,0xCD,0x75,0xD0,0x57,0xB2,
+				   0x6D,0x52,0xA5,0x5E,0x6B,0x65,0xA8,0xED,0x63,0x54,0x86,0x72,0x13,0x4C,0xD9,0x3B,0x3E,0xD5,
+				   0xA6,0x0D,0xB8,0xF1,0x98,0x09,0xEE,0xCC,0x5B,0x20,0xF2,0xDD,0x30,0x64,0xC9,0x1B,0x7D,0x3A,
+				   0x80,0xC7,0x5C,0xDB,0xE5,0x29,0xCE,0x5D,0xA9,0xC6,0x16,0x46,0x1D,0x8C,0x41,0x70,0x4A,0x51,
+				   0x60,0xFB,0x95,0x32,0xBF,0x0A,0xEC,0xE9,0x02,0x9D,0x71,0x79,0xDA,0xC2,0x03,0x0C,0xAD,0x92,
+				   0x93,0x48,0xBE,0xAA,0x99,0x94,0x25,0x14,0xE2,0x56,0xF6,0x1A,0xCF,0xBC,0x8E,0xB6,0x77,0x4D,
+				   0x78,0x9C,0xFF,0x27,0xC0,0x8A,0xFA,0xD6,0x2E,0x05,0x5F,0x73,0x26,0x00,0x5A,0xA1,0xE7,0x2F,
+				   0x15,0x68,0x38,0xEF,0x4B,0xFE,0xD2,0x97,0x6E,0x31,0x11,0x91,0x9A,0x59,0xCB,0xC3,0xD7,0xB4,
+				   0x43,0x83,0x67,0x04,0xFC,0xBD,0xD8,0xE3,0xD4,0xEB,0xC4,0x47,0x3F,0x3C,0x6F,0xDC,0x22,0x35,
+				   0xDE,0xAE,0x44,0xC1,0xA2,0xF8,0xE0,0x50,0x42,0x53,0x89,0x58,0xF3,0x87,0x36,0x34,0x2A,0x17,
+				   0xC5,0x84,0xAB,0xA3,0x49,0x8B,0xEA,0x2D,0x45,0x7F,0xBA,0x4F,0xAF,0xF9,0x12,0x37,0x33,0x85,
+				   0x01,0x2C,0x40,0xF0,0xCA,0x0F,0xBB,0x0E,0xAC,0x07,0x69,0xE4,0x6C,0xB0,0x7E,0x9E,0x10,0x24,
+				   0x28,0xD3,0xE8,0x82,0xF4,0xB1,0xF7,0x8D,0x7C,0x76,0x2B,0xB9,0xE1,0xB3,0x06,0x6A,0xF5,0x88,
+				   0x19,0x4E,0x8F,0xA0,0x96,0x90,0xA7,0xD1,0xB5,0x23,0x1E,0xDF,0x00,0x00 };
+
+void dec_arr(unsigned char arr[], int length) {
+	int edx = 0;
+	while (edx < length) {
+		int bl = buff[0x108];
+		bl++;
+		buff[0x108] = bl;
+		bl = bl & 0xFF; // limpando 3 bytes
+		int al = buff[bl + 0x8];
+		int esi = bl + 0x8; // lea esi, dword ptr[ebx+ecx+0x08]
+		bl = buff[0x109];
+		bl += al;
+		buff[0x109] = bl;
+		bl = bl & 0xFF; // limpando 3 bytes
+		al = buff[bl + 0x8];
+		int edi = bl + 0x8; // lea edi, dword ptr[ebx+ecx+0x08]
+		bl = buff[esi];
+		buff[esi] = al;
+		al = 0;
+		buff[edi] = bl;
+		al = buff[0x109];
+		bl = 0; // xor ebx, ebx
+		bl = buff[0x108];
+		al = buff[al + 0x8];
+		al += buff[bl + 0x8];
+		bl = arr[edx];
+		al = al & 0xFF;
+		al = buff[al + 0x8];
+		bl = bl ^ al;
+		arr[edx] = bl; // descriptografando cada byte
+		edx++;
+	}
+}
+
+void dec_vector(std::vector<unsigned char>& arr) {
+	int edx = 0;
+	while (edx < arr.size()) {
+		int bl = buff[0x108];
+		bl++;
+		buff[0x108] = bl;
+		bl = bl & 0xFF; // limpando 3 bytes
+		int al = buff[bl + 0x8];
+		int esi = bl + 0x8; // lea esi, dword ptr[ebx+ecx+0x08]
+		bl = buff[0x109];
+		bl += al;
+		buff[0x109] = bl;
+		bl = bl & 0xFF; // limpando 3 bytes
+		al = buff[bl + 0x8];
+		int edi = bl + 0x8; // lea edi, dword ptr[ebx+ecx+0x08]
+		bl = buff[esi];
+		buff[esi] = al;
+		al = 0;
+		buff[edi] = bl;
+		al = buff[0x109];
+		bl = 0; // xor ebx, ebx
+		bl = buff[0x108];
+		al = buff[al + 0x8];
+		al += buff[bl + 0x8];
+		bl = arr[edx];
+		al = al & 0xFF;
+		al = buff[al + 0x8];
+		bl = bl ^ al;
+		arr[edx] = bl; // descriptografando cada byte
+		edx++;
+	}
+}
+
+Aux_function::Aux_function() : mt(std::make_shared<std::mutex>()) {
+}
+
+int Aux_function::serialize(list & packet, std::string login, list hash) {
+	packet[0] = 0x3;
+	packet[1] = (BYTE)(login.length() + hash.size() + 8);
+	packet[2] = (BYTE)login.length();
+	std::copy((char*)login.c_str(), (char*)login.c_str() + login.length(), packet.begin() + 3);
+	packet[login.length() + 3] = 0x10;
+	std::copy(hash.begin(), hash.end(), packet.begin() + login.length() + 4);
+	packet[login.length() + 20] = 0;
+	packet[login.length() + 21] = 0x4;
+	return login.length() + 26;
+}
+
+void Aux_function::decrypt_unpack(list & decode_data, int recv_length, unsigned char recv_buf[]) {
+	if (recv_length > 0) {
+		decode_data.resize(recv_length);
+		std::copy(recv_buf, recv_buf + recv_length, decode_data.begin());
+	}
+	crypt.Decode(decode_data);
+	dec.Unpack(decode_data);
+}
+
+unsigned char crypted2[10000];
+
+int Aux_function::crypt_send(list & message) {
+	std::lock_guard<std::mutex> lock(*mt);
+
+	dec_vector(message);
+
+	crypt.Encode(message);
+
+	return send(socket_descriptor, (char*)message.data(), message.size(), NULL);
+}
+
+list Aux_function::reverse_bytes(int val) {
+	std::vector<unsigned char> arr(4);
+	for (size_t i = 0; i < 4; i++)
+		arr[i] = *((unsigned char*)&val + i);
+	reverse(arr.begin(), arr.end());
+	return arr;
+};
+
+int Aux_function::reverse_bytes_ex(int val) {
+	std::vector<unsigned char> arr(4);
+	for (size_t i = 0; i < 4; i++)
+		arr[i] = *((unsigned char*)&val + i);
+	reverse(arr.begin(), arr.end());
+	return *reinterpret_cast<int*>(&arr[0]);
+};
+
+int Aux_function::recv_complete(unsigned char recv_buf[], int& recv_length) {
+	//memset(recv_buf, 0, recv_length);
+	if ((recv_length = recv(socket_descriptor, (char*)recv_buf, 20000, NULL)) <= 0) {
+		std::cout << "Ocorreu um erro, provavelmente a conexão com o servidor caiu.." << std::endl;
+		return 1;
+	}
+	return 0;
+}
+
+void Aux_function::get_player_basic_info(list decode_data, std::map<std::string, 
+	unsigned int>& player_info) {
+	std::vector<unsigned char> tmp(decode_data.begin() + 20, decode_data.begin() + 24);
+	reverse(tmp.begin(), tmp.end());
+	unsigned char  nick_length = decode_data[35];
+	unsigned int   player_id   = 0;
+	memmove(&player_id, tmp.data(), 4);
+	std::vector<char> name_bytes(decode_data.begin() + 36, decode_data.begin() + 36 + nick_length);
+	name_bytes.erase(std::remove(name_bytes.begin(), name_bytes.end(), 0), name_bytes.end());
+	std::string s(name_bytes.begin(), name_bytes.end());
+	player_info[s] = player_id;
+	std::cout << "nickname: " << s << "  char_id: " << player_id << std::endl;
+}
+
+void Aux_function::set_descriptor(SOCKET arg_socket_descriptor) {
+	this->socket_descriptor = arg_socket_descriptor;
+}
+
+//constexpr int basic_hash(const char str[]) {
+//	unsigned int r = 0;
+//	const unsigned int magic_number = 23;
+//
+//	int i = 0;
+//
+//	while (str[i] != 0) {
+//		r += str[i];
+//		i++;
+//	}
+//
+//	return r * magic_number;
+//}
